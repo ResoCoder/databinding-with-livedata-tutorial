@@ -1,12 +1,23 @@
 package com.resocoder.databinding
 
 import androidx.databinding.Bindable
+import androidx.databinding.Observable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel : ViewModel(), Observable {
+    
+    private val callbacks: PropertyChangeRegistry by lazy { PropertyChangeRegistry() }
+
+    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
+        callbacks.add(callback)
+    }
+
+    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
+        callbacks.remove(callback)
+    }
 
     val currentRandomFruitName: LiveData<String>
         get() = FakeRepository.currentRandomFruitName
